@@ -31,3 +31,8 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.add.type.headers: false
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: tinyllama

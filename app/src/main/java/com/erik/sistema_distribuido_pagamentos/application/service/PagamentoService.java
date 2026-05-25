@@ -33,7 +33,8 @@ public class PagamentoService implements PagamentoUseCase {
                     idadeCliente,
                     valor,
                     "PENDENTE",
-                    OffsetDateTime.now()
+                    OffsetDateTime.now(),
+                    null
             );
 
             Pagamento salvo = repositoryPort.salvar(pagamento);

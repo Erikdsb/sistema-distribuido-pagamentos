@@ -37,7 +37,8 @@ public class PagamentoRepositoryAdapter implements PagamentoRepositoryPort {
                     saved.getIdadeCliente(),
                     saved.getValor(),
                     saved.getStatus(),
-                    saved.getCriadoEm()
+                    saved.getCriadoEm(),
+                    null
             );
         } catch (Exception e) {
             log.error("Erro ao persistir pagamento. correlationId: {}. Erro: {}",
@@ -57,7 +58,8 @@ public class PagamentoRepositoryAdapter implements PagamentoRepositoryPort {
                             entity.getIdadeCliente(),
                             entity.getValor(),
                             entity.getStatus(),
-                            entity.getCriadoEm()
+                            entity.getCriadoEm(),
+                            null
                     ))
                     .orElse(null);
 

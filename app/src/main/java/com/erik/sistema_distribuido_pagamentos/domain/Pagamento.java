@@ -18,4 +18,5 @@ public class Pagamento {
     private BigDecimal valor;
     private String status;
     private OffsetDateTime criadoEm;
+    private String mensagem;
 }
