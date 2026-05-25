@@ -17,7 +17,17 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     listener:
-      auto-startup: false
+      auto-startup: true
     consumer:
       auto-offset-reset: earliest
       group-id: pagamentos-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.erik.sistema_distribuido_pagamentos.domain"
+        spring.json.value.default.type: "com.erik.sistema_distribuido_pagamentos.domain.Pagamento"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false

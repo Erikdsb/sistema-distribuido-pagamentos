@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -15,6 +16,7 @@ import java.time.OffsetDateTime;
 public class PagamentoEntity {
 
     @Id
+    @Column(name = "correlation_id")
     private String correlationId;
 
     @Column(nullable = false)
@@ -29,6 +31,7 @@ public class PagamentoEntity {
     @Column(nullable = false)
     private BigDecimal valor;
 
+    @Setter
     @Column(nullable = false)
     private String status;
 

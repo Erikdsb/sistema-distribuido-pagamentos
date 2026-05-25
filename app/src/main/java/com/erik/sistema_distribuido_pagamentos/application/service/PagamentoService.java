@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class PagamentoService implements PagamentoUseCase {
 
     private final PagamentoRepositoryPort repositoryPort;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
@@ -30,14 +32,17 @@ public class PagamentoService implements PagamentoUseCase {
                     nomeCliente,
                     idadeCliente,
                     valor,
-                    "APROVADO",
+                    "PENDENTE",
                     OffsetDateTime.now()
             );
-            log.info("Pagamento montado com correlationId: {}, status: {}", pagamento.getCorrelationId(), pagamento.getStatus());
 
             Pagamento salvo = repositoryPort.salvar(pagamento);
-            log.info("Pagamento criado e persistido com sucesso. correlationId: {}, clienteId: {}, valor: {}",
-                    salvo.getCorrelationId(), salvo.getClienteId(), salvo.getValor());
+            log.info("Pagamento persistido. correlationId: {}", salvo.getCorrelationId());
+
+            // Publica evento interno do Spring, não direto no Kafka
+            applicationEventPublisher.publishEvent(salvo);
+
+            log.info("Evento interno publicado. correlationId: {}", salvo.getCorrelationId());
             return salvo;
         } catch (Exception e) {
             log.error("Erro ao criar pagamento. clienteId: {}, valor: {}. Erro: {}", clienteId, valor, e.getMessage(), e);

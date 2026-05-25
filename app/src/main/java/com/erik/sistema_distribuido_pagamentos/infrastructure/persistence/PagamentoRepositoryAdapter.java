@@ -74,4 +74,19 @@ public class PagamentoRepositoryAdapter implements PagamentoRepositoryPort {
             throw e;
         }
     }
+
+    @Override
+    public void atualizarStatus(String correlationId, String status) {
+        log.info("Atualizando status do pagamento. correlationId: {}, status: {}", correlationId, status);
+        try {
+            PagamentoEntity entity = jpaRepository.findById(correlationId)
+                    .orElseThrow(() -> new RuntimeException("Pagamento não encontrado. correlationId: " + correlationId));
+            entity.setStatus(status);
+            jpaRepository.save(entity);
+            log.info("Status atualizado com sucesso. correlationId: {}, status: {}", correlationId, status);
+        } catch (Exception e) {
+            log.error("Erro ao atualizar status. correlationId: {}. Erro: {}", correlationId, e.getMessage(), e);
+            throw e;
+        }
+    }
 }
