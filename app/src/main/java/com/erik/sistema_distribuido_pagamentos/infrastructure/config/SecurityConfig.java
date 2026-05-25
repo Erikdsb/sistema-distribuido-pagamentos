@@ -1,4 +1,4 @@
-package com.erik.sistema_distribuido_pagamentos.config;
+package com.erik.sistema_distribuido_pagamentos.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
