@@ -54,6 +54,7 @@ public class FraudeEventConsumer {
     }
 
     private boolean analisarFraude(Pagamento pagamento) {
+
         return pagamento.getValor().doubleValue() > 10000;
     }
 }

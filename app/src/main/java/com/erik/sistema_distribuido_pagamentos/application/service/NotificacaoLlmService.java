@@ -1,17 +1,16 @@
 package com.erik.sistema_distribuido_pagamentos.application.service;
 
 import com.erik.sistema_distribuido_pagamentos.domain.Pagamento;
-import lombok.RequiredArgsConstructor;
+import com.google.genai.Client;
+import com.google.genai.types.GenerateContentResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class NotificacaoLlmService {
 
-    // Prompt para quando tiver uma IA melhor, mais avançada, capaz de entender nuances e gerar mensagens mais personalizadas.
     private static final String PROMPT_V1 = """
             Você é um assistente de notificações de pagamento.
             Gere UMA mensagem curta (máximo 2 frases) para o cliente.
@@ -23,7 +22,15 @@ public class NotificacaoLlmService {
             Responda apenas com o texto da mensagem, sem aspas nem explicações.
             """;
 
-    private final ChatClient chatClient;
+    private static final String MODEL = "gemini-2.5-flash";
+
+    private final Client geminiClient;
+
+    public NotificacaoLlmService(@Value("${gemini.api-key}") String apiKey) {
+        this.geminiClient = Client.builder()
+                .apiKey(apiKey)
+                .build();
+    }
 
     public String gerarMensagem(Pagamento pagamento) {
         EstiloComunicacao estilo = EstiloComunicacao.porIdade(pagamento.getIdadeCliente());
@@ -35,17 +42,17 @@ public class NotificacaoLlmService {
         );
 
         try {
-            String resposta = chatClient.prompt()
-                    .user(prompt)
-                    .call()
-                    .content();
+            GenerateContentResponse response = geminiClient.models.generateContent(
+                    MODEL, prompt, null
+            );
+            String resposta = response.text();
             if (resposta != null && !resposta.isBlank()) {
-                log.info("Mensagem gerada via LLM. correlationId: {}, estilo: {}, mensagem: {}",
+                log.info("Mensagem gerada via Gemini. correlationId: {}, estilo: {}, mensagem: {}",
                         pagamento.getCorrelationId(), estilo, resposta.trim());
                 return resposta.trim();
             }
         } catch (Exception e) {
-            log.warn("Falha na geração via Ollama, usando fallback. correlationId: {}. Erro: {}",
+            log.warn("Falha na geração via Gemini, usando fallback. correlationId: {}. Erro: {}",
                     pagamento.getCorrelationId(), e.getMessage());
         }
 

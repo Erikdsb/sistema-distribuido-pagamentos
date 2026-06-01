@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mariadb://127.0.0.1:3306/sistema_distribuido_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password:
+    password: root
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -31,8 +31,5 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.add.type.headers: false
-  ai:
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        model: tinyllama
+gemini:
+  api-key: ${GOOGLE_API_KEY}
